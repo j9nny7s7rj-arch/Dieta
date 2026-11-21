@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Plan familia">
+<title>Plan familia</title>
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--tx:#1f1f1d;--tx2:#6b6a65;--bd:rgba(0,0,0,.12);--ac:#185FA5;--acb:#E6F1FB;--ok:#3B6D11;--okb:#EAF3DE;--wa:#854F0B;--wab:#FAEEDA}
+@media(prefers-color-scheme:dark){:root{--bg:#1a1a19;--card:#262624;--tx:#f1efe8;--tx2:#b4b2a9;--bd:rgba(255,255,255,.14);--ac:#85B7EB;--acb:#0C447C;--ok:#C0DD97;--okb:#27500A;--wa:#FAC775;--wab:#633806}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,system-ui,sans-serif;padding:calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 24px);-webkit-text-size-adjust:100%}
+h1{font-size:24px;font-weight:600;margin:4px 0 12px}
+.tb{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
+button{font:inherit;font-size:14px;padding:8px 12px;min-width:44px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--tx)}
+.tb button.on{background:var(--acb);color:var(--ac);border-color:var(--ac)}
+.pf button.on{background:var(--okb);color:var(--ok);border-color:var(--ok)}
+.cd{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px 16px;margin:0 0 10px}
+.lb{font-size:13px;color:var(--tx2);margin:0 0 2px}
+.tt{font-size:16px;font-weight:600;margin:0 0 2px}
+.sm{font-size:14px;color:var(--tx2);margin:0;line-height:1.5}
+.rw{padding:10px 0;border-top:1px solid var(--bd)}
+.rw:first-child{border-top:none}
+.ex{display:flex;align-items:center;gap:12px;padding:8px 0;font-size:15px}
+.ex input{width:22px;height:22px}
+.wa{background:var(--wab);border-color:var(--wa)}
+.wa p{color:var(--wa)}
+p{margin:0}
+</style>
+</head>
+<body>
+<h1>Plan familia</h1>
+<div class="tb" id="vw"></div>
+<div id="tp"></div>
+<div id="v"></div>
+<script>
+const DS=["L","M","X","J","V","S","D"];
+const DE=["Tostada integral con aceite y tomate","Yogur (sin lactosa para ella) con avena y fruta","Tostada con aguacate (y huevo para él)","Bebida vegetal con calcio y tostada con aceite","Tostada integral con aceite y tomate","Huevos revueltos con tostada integral","Yogur (sin lactosa para ella) con fruta y nueces"];
+const AN=["Bocadillo de tortilla francesa con tomate y fruta","Bocadillo de atún con tomate y una mandarina","Bocadillo de pollo asado casero con lechuga","Bocadillo de hummus con zanahoria rallada y un plátano","Bocadillo de queso fresco con tomate y fruta"];
+const AE=["Plátano y un puñado de almendras","Yogur sin lactosa con avena","Tostada pequeña con aguacate","Palitos de zanahoria con hummus","Manzana y un puñado de nueces","Fruta","Fruta"];
+const AL=["Una manzana","Huevo duro y tomates cherry","Yogur natural sin azúcar","Palitos de zanahoria con hummus","Una pera y unas pocas nueces","Fruta si hay hambre","Fruta si hay hambre"];
+const W=[[
+[["Lentejas estofadas con verduras","Hechas el domingo. En termo aguantan calientes."],["Merluza al horno con patata y judías verdes","Horno 20 min."]],
+[["Pollo al horno con boniato y pimiento","Hecho el domingo."],["Crema de calabaza (sin nata) y tortilla francesa","Crema para 3 días."]],
+[["Ensalada de garbanzos, atún, huevo y tomate","Sin fuego. Ideal fría."],["Salmón a la plancha con brócoli y arroz","Haz también las albóndigas de mañana."]],
+[["Albóndigas de pavo en tomate con arroz integral","Congela la mitad para la semana 2."],["Sopa de verduras y revuelto de champiñones y espinacas","20 min."]],
+[["Pasta integral con atún, tomate y verduras","Hecha el jueves por la noche."],["Pescado blanco a la plancha con ensalada y patata","15 min."]],
+[["Arroz con pollo y verduras","En casa."],["Hamburguesas caseras de ternera con ensalada","La única carne roja de la semana."]],
+[["Garbanzos con espinacas y huevo duro","Día de cocinar lo del lunes y el martes."],["Crema de verduras y caballa o sardinas al horno","Pescado azul."]]],[
+[["Lentejas con arroz y verduras","Hechas el domingo."],["Lenguado o gallo a la plancha con calabacín","10 min."]],
+[["Pollo al curry suave con leche de coco y arroz","Hecho el domingo."],["Tortilla de calabacín con ensalada de tomate","15 min."]],
+[["Ensalada de pasta integral con atún, maíz y tomate","Fría."],["Salmón al horno con patata y espárragos","Haz también los garbanzos de mañana."]],
+[["Garbanzos guisados con verduras","Olla exprés 15 min."],["Crema de calabacín y gambas a la plancha","15 min."]],
+[["Albóndigas de pavo (congeladas de la semana 1) con arroz","Solo descongelar."],["Merluza al horno con ensalada y patata","Horno 20 min."]],
+[["Paella de pollo y verduras","En casa, en familia."],["Pizza casera integral con verduras y pollo","Queso sin lactosa en su parte."]],
+[["Alubias blancas con verduras","Día de cocinar lo del lunes y el martes."],["Crema de verduras y huevos al plato con tomate","20 min."]]]];
+const SH=[
+[["Fruta y verdura","Fruta variada (unos 7 kg: plátanos, manzanas, mandarinas, peras) · patatas 2 kg · boniatos 1 kg · tomates 1,5 kg · tomates cherry · calabaza 1 kg · zanahorias 1 kg · cebollas 1 kg · 3 pimientos · judías verdes 500 g · 1 brócoli · espinacas 400 g · champiñones 250 g · 2 lechugas · verdura para sopa · 3 aguacates · ajos"],["Pescado, carne y huevos","Merluza 600 g · 4 lomos de salmón · pescado blanco 600 g · caballa o sardinas 600 g · pollo para asar 1,2 kg · pechuga 300 g · pavo picado 1 kg · ternera picada 500 g · 2 docenas de huevos · 6 latas de atún"],["Legumbres, cereales y pan","Lentejas 500 g · 3 botes de garbanzos · arroz integral 1 kg · pasta integral 500 g · avena 500 g · pan integral"],["Lácteos y otros","8 yogures naturales · 8 yogures sin lactosa · bebida vegetal con calcio 2 L · queso fresco · 2 tarrinas de hummus · 2 botes de tomate triturado · almendras y nueces naturales 300 g · aceite de oliva"]],
+[["Fruta y verdura","Fruta variada (unos 7 kg) · patatas 2 kg · tomates 1,5 kg · 4 calabacines · 1 manojo de espárragos · zanahorias 1 kg · cebollas 1 kg · 3 pimientos · 2 lechugas · verdura para crema · 3 aguacates · ajos"],["Pescado, carne y huevos","Lenguado o gallo 600 g · 4 lomos de salmón · merluza 600 g · gambas peladas 400 g · pollo troceado 1,5 kg · pechuga 300 g · 2 docenas de huevos · 6 latas de atún"],["Legumbres, cereales y pan","Lentejas 500 g · 2 botes de garbanzos · 2 botes de alubias blancas · arroz 1,5 kg · pasta integral 500 g · masa de pizza integral · avena · pan integral"],["Lácteos y otros","8 yogures naturales · 8 yogures sin lactosa · bebida vegetal con calcio 2 L · 1 lata de leche de coco · curry suave · queso fresco · queso rallado sin lactosa · maíz dulce · 2 tarrinas de hummus · tomate triturado · frutos secos naturales 300 g"]]];
+const RA={ella:"Su ración: plato completo, la mitad verdura. No saltarse comidas.",el:"Tu ración: doble de verdura, media de arroz, pasta o patata. Sin pan en comida y cena."};
+const FE=[["Nivel 1","1 serie de 8 repeticiones",["Sentarse y levantarse de una silla","Flexiones en la pared","Puente de glúteo tumbada","Elevar talones agarrada a una silla"]],["Nivel 2","2 series de 8",["Sentarse y levantarse de una silla","Flexiones en la pared","Puente de glúteo","Remo con 2 botellas de agua de 1 L"]],["Nivel 3","2 series de 10–12",["Sentarse y levantarse sin apoyar las manos","Flexiones en una mesa","Puente de glúteo con pausa de 2 s","Remo con botellas de 1,5 L","Press de hombros sentada con botellas"]],["Nivel 4","3 series de 10",["Sentadilla sin silla","Flexiones en una mesa","Zancada atrás agarrada a una silla","Remo con garrafas o goma elástica","Press de hombros con botellas"]]];
+const FD=[1,0,1,0,1,0,0];
+const EN={baja:"Energía baja: hoy no toca fuerza. Descanso y estiramientos suaves.",media:"Energía media: haz la mitad de las series de tu nivel.",buena:"Energía buena: tu nivel completo, sin añadir más."};
+const ER=[[["Sentadilla a una silla","3 × 10"],["Flexiones en una mesa","3 × 8"],["Puente de glúteo","3 × 12"],["Plancha en una mesa","3 × 20 s"]],[["Sentadilla","3 × 12"],["Flexiones en una mesa","3 × 10"],["Zancada atrás","3 × 8 por pierna"],["Plancha con rodillas","3 × 30 s"]],[["Sentadilla con mochila con peso","3 × 12"],["Flexiones con rodillas en el suelo","3 × 10"],["Remo con garrafas de agua","3 × 12"],["Plancha","3 × 40 s"]]];
+const EW=["Caminar 30 min (unos 6.000 pasos)","Caminar 40 min a paso ligero (unos 8.000 pasos)","Caminar 45–60 min o bici (unos 10.000 pasos)"];
+const K={ella:[["Gasta poca energía en la cocina","Que cocine sobre todo él. Para la energía: hacer, parar, descansar."],["Agua y horarios regulares","La deshidratación y saltarse comidas son desencadenantes frecuentes de migraña."],["Evitar embutidos y procesados","También quesos curados, pastillas de caldo con glutamato y alcohol."],["Calcio sin lactosa","Bebidas vegetales enriquecidas, sardinas en lata, almendras y brócoli."],["Diario de energía y migrañas","Apuntar qué hizo y cómo estaba al día siguiente ayuda a encontrar su límite."]],el:[["5 kg en unos 3 meses","Medio kilo por semana es un ritmo realista. Pésate una vez por semana, el mismo día y en ayunas."],["Bebidas","Fuera refrescos, zumos y cerveza entre semana."],["Pan y picoteo","El pan solo en el desayuno. Nada de picar mientras cocinas."],["Cenar pronto y dormir bien","Dormir poco aumenta el hambre al día siguiente."]]};
+function ld(){try{return JSON.parse(localStorage.getItem("planFamilia"))||{}}catch(e){return{}}}
+let S=ld();
+const sv=()=>{try{localStorage.setItem("planFamilia",JSON.stringify(S))}catch(e){}};
+const now=new Date(),dk=d=>d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+const mo=new Date(now);mo.setHours(12,0,0,0);mo.setDate(mo.getDate()-((mo.getDay()+6)%7));
+const MON=dk(mo),TODAY=dk(now),wn=Math.round((mo-new Date(2026,0,5,12))/604800000);
+S.p=S.p||"ella";S.fl=S.fl||0;S.ep=S.ep||0;S.done=S.done||{};
+for(const k in S.done)if(!k.startsWith(MON+"|"))delete S.done[k];
+if(S.enD!==TODAY){S.en=null;S.enD=TODAY}
+sv();
+let vw="dia",wk=((wn%2)+2)%2,di=(now.getDay()+6)%7;
+const v=document.getElementById("v"),tp=document.getElementById("tp"),vb=document.getElementById("vw");
+const B=(a,on,k,l)=>`<button data-${k}="${a}" class="${on?"on":""}">${l}</button>`;
+function bind(el,k,f){el.querySelectorAll("[data-"+k+"]").forEach(b=>b.onclick=()=>{f(b.dataset[k]);sv();r()})}
+function chk(id,txt,rep){return `<label class="ex"><input type="checkbox" data-id="${id}" ${S.done[id]?"checked":""}><span style="flex:1">${txt}</span>${rep?`<span class="sm">${rep}</span>`:""}</label>`}
+function r(){
+vb.innerHTML=B("dia",vw==="dia","v","Día a día")+B("compra",vw==="compra","v","Compra")+B("claves",vw==="claves","v","Claves");
+bind(vb,"v",x=>vw=x);
+let t="";
+if(vw!=="claves")t+=`<div class="tb pf">${B(0,wk===0,"w","Semana 1")}${B(1,wk===1,"w","Semana 2")}</div>`;
+if(vw!=="compra")t+=`<div class="tb pf">${B("ella",S.p==="ella","p","Ella")}${B("el",S.p==="el","p","Él")}</div>`;
+if(vw==="dia")t+=`<div class="tb">${DS.map((s,i)=>B(i,i===di,"d",s)).join("")}</div>`;
+tp.innerHTML=t;
+bind(tp,"w",x=>wk=+x);bind(tp,"p",x=>S.p=x);bind(tp,"d",x=>di=+x);
+let h="";
+if(vw==="compra"){SH[wk].forEach(s=>h+=`<div class="cd"><p class="tt">${s[0]}</p><p class="sm" style="color:var(--tx);line-height:1.7">${s[1]}</p></div>`);h+=`<p class="sm">Cantidades aproximadas para los cuatro. Revisa la despensa antes de comprar.</p>`;v.innerHTML=h;return}
+if(vw==="claves"){K[S.p].forEach(k=>h+=`<div class="cd"><p class="tt">${k[0]}</p><p class="sm">${k[1]}</p></div>`);v.innerHTML=h;return}
+const m=W[wk][di],cole=di<5;
+h+=`<div class="cd"><div class="rw"><p class="lb">Desayuno</p><p class="tt">${DE[di]}</p></div>`;
+h+=`<div class="rw"><p class="lb">Almuerzo</p>${cole?`<p class="sm">Niñas: ${AN[di]}</p>`:""}<p class="sm">${S.p==="ella"?"Ella: "+AE[di]:"Tú: "+AL[di]}</p></div>`;
+h+=`<div class="rw"><p class="lb">Comida${cole?": niñas en táper, vosotros en casa":""}</p><p class="tt">${m[0][0]}</p><p class="sm">${m[0][1]}</p></div>`;
+h+=`<div class="rw"><p class="lb">Cena, los cuatro juntos</p><p class="tt">${m[1][0]}</p><p class="sm">${m[1][1]}</p></div>`;
+h+=`<div class="rw"><p class="sm" style="color:var(--ok)">${RA[S.p]}</p></div></div>`;
+if(S.p==="ella"){
+h+=`<div class="cd"><p class="lb">Fuerza · ¿cómo está hoy tu energía?</p><div class="tb pf" style="margin:6px 0">${B("baja",S.en==="baja","e","Baja")}${B("media",S.en==="media","e","Media")}${B("buena",S.en==="buena","e","Buena")}</div>`;
+if(!FD[di])h+=`<p class="tt">Día de recuperación</p><p class="sm">Paseo corto y tranquilo si le apetece, o descanso. Los músculos se fortalecen al descansar.</p>`;
+else if(S.en==="baja")h+=`<p class="tt">${EN.baja}</p>`;
+else{const f=FE[S.fl];h+=`<p class="tt">${f[0]}: ${f[1]}</p>${S.en?`<p class="sm">${EN[S.en]}</p>`:""}`;f[2].forEach((x,i)=>h+=chk(MON+"|f"+di+S.fl+i,x))}
+h+=`<p class="lb" style="margin-top:10px">Su nivel (mínimo 2 semanas en cada uno)</p><div class="tb pf" style="margin:4px 0 0">${FE.map((x,i)=>B(i,i===S.fl,"fl",i+1)).join("")}</div></div>`;
+h+=`<div class="cd wa"><p class="sm">Movimientos lentos, 1–2 min de descanso entre ejercicios. Termina con fuerzas de sobra. Sube de nivel solo si en las 48 h siguientes no ha empeorado; si empeora, baja uno.</p></div>`;
+}else{
+h+=`<div class="cd"><p class="lb">Actividad</p><div class="tb pf" style="margin:6px 0">${["Sem. 1–2","Sem. 3–4","Sem. 5–8"].map((x,i)=>B(i,i===S.ep,"ep",x)).join("")}</div>`;
+h+=di===6?`<p class="tt">Descanso o paseo tranquilo en familia</p>`:di===5?`<p class="tt">Paseo largo o bici, 60 min</p>`:`<p class="tt">${EW[S.ep]}</p>`;
+if(FD[di]){h+=`<p class="lb" style="margin-top:8px">Fuerza en casa, 20 min</p>`;ER[S.ep].forEach((x,i)=>h+=chk(MON+"|e"+di+S.ep+i,x[0],x[1]))}
+h+=`</div>`}
+v.innerHTML=h;
+bind(v,"e",x=>S.en=x);bind(v,"fl",x=>S.fl=+x);bind(v,"ep",x=>S.ep=+x);
+v.querySelectorAll("[data-id]").forEach(c=>c.onchange=()=>{S.done[c.dataset.id]=c.checked;sv()});
+}
+r();
+</script>
+</body>
+</html>
